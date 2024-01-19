@@ -5,7 +5,7 @@ const createUsers = require("./createUsers");
 
 async function migrationRun(){
     const schemas = [
-        createUsers
+      createUsers
 
     ].join('')//remover espaços
 
