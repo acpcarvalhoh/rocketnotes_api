@@ -3,6 +3,7 @@ const AppError = require('../utils/AppError');
 const sqlConection = require("../database/sqlite")
 const moment = require('moment');
 const UserRepository = require("../repositories/userRepository");
+const UserCreateService = require("../services/userCreateService");
 
 class UsersController{
     /* 
@@ -15,19 +16,11 @@ class UsersController{
 
     async create(request, response){
         const {name, email, password} = request.body;
+        const userRepository = new UserRepository();
+        const userCreateService = new UserCreateService(userRepository)
 
-        const userRepository = new UserRepository()
+        await userCreateService.execute({ name, email, password });
         
-        const checkUserExist = await userRepository.findByEmail(email)
-
-        if(checkUserExist){
-            throw new AppError("Este E-mail já está cadastrado!!!")
-        };
-
-
-        const hashedPassword = await hash(password, 8);
-
-        await userRepository.create({name, email, password: hashedPassword});
 
         return response.status(201).json({});
     };
